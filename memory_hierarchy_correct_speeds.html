@@ -1,0 +1,1099 @@
+<style>
+:root {
+  --primary: #378ADD;
+  --primary-dark: #185FA5;
+  --success: #639922;
+  --warning: #BA7517;
+  --danger: #E24B4A;
+  --cache-color: #7F77DD;
+  --ram-color: #378ADD;
+  --ssd-color: #BA7517;
+  --hdd-color: #5F5E5A;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.5);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  padding: 20px;
+  font-family: 'Anthropic Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+  color: #e0e0e0;
+  min-height: 100vh;
+}
+
+.container { max-width: 100%; margin: 0 auto; }
+
+h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 24px 0;
+  color: #ffffff;
+  background: linear-gradient(135deg, #378ADD 0%, #00d4ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 24px 0 16px 0;
+  color: #ffffff;
+  position: relative;
+  padding-left: 12px;
+}
+
+h3::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 20px;
+  background: linear-gradient(180deg, #378ADD 0%, #00d4ff 100%);
+  border-radius: 2px;
+}
+
+.section {
+  padding: 24px;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #1a1f2e 0%, #232d3d 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(55, 138, 221, 0.2);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.section:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(55, 138, 221, 0.4);
+  transform: translateY(-2px);
+}
+
+.memory-tier {
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(26, 31, 46, 0.8) 0%, rgba(35, 45, 61, 0.8) 100%);
+  border: 1.5px solid rgba(55, 138, 221, 0.25);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.memory-tier::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.6s;
+  pointer-events: none;
+}
+
+.memory-tier:hover::before {
+  left: 100%;
+}
+
+.memory-tier:hover {
+  border-color: rgba(55, 138, 221, 0.5);
+  background: linear-gradient(135deg, rgba(26, 31, 46, 0.95) 0%, rgba(35, 45, 61, 0.95) 100%);
+  box-shadow: 0 8px 20px rgba(55, 138, 221, 0.25);
+  transform: translateX(4px);
+}
+
+.memory-tier.expanded {
+  background: linear-gradient(135deg, rgba(35, 45, 61, 0.98) 0%, rgba(26, 31, 46, 0.98) 100%);
+  border-color: rgba(55, 138, 221, 0.4);
+  box-shadow: 0 10px 25px rgba(55, 138, 221, 0.2);
+}
+
+.tier-visual {
+  flex: 0 0 100px;
+  height: 100px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 12px;
+  color: white;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.tier-visual::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent);
+  transform: rotate(45deg);
+}
+
+.tier-cache { 
+  background: linear-gradient(135deg, #7F77DD 0%, #534AB7 100%);
+  width: 70px;
+}
+
+.tier-ram { 
+  background: linear-gradient(135deg, #378ADD 0%, #185FA5 100%);
+  width: 90px;
+}
+
+.tier-ssd { 
+  background: linear-gradient(135deg, #BA7517 0%, #854F0B 100%);
+  width: 120px;
+}
+
+.tier-hdd { 
+  background: linear-gradient(135deg, #5F5E5A 0%, #2C2C2A 100%);
+  width: 140px;
+}
+
+.tier-header {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  font-size: 13px;
+}
+
+.tier-label {
+  font-weight: 600;
+  color: #ffffff;
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.expand-icon {
+  font-size: 18px;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #378ADD;
+}
+
+.memory-tier.expanded .expand-icon {
+  transform: rotate(180deg);
+}
+
+.spec { 
+  color: #b0b0b0;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+  transition: all 0.2s;
+}
+
+.spec strong { 
+  color: #ffffff;
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+.memory-tier:hover .spec {
+  color: #00d4ff;
+}
+
+.tier-details {
+  display: none;
+  grid-column: 1 / -1;
+  padding-top: 16px;
+  border-top: 2px solid rgba(55, 138, 221, 0.2);
+  margin-top: 16px;
+  animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.memory-tier.expanded .tier-details {
+  display: block;
+}
+
+.detail-section {
+  margin-bottom: 16px;
+}
+
+.detail-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #00d4ff;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 12px;
+  opacity: 0.95;
+}
+
+.detail-content {
+  font-size: 13px;
+  color: #b0b0b0;
+  line-height: 1.7;
+  padding: 8px 0;
+}
+
+.use-cases {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.use-case {
+  padding: 10px;
+  background: linear-gradient(135deg, rgba(55, 138, 221, 0.15) 0%, rgba(0, 212, 255, 0.1) 100%);
+  border-radius: 8px;
+  border: 1px solid rgba(55, 138, 221, 0.25);
+  font-size: 12px;
+  color: #b0b0b0;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.use-case:hover {
+  background: linear-gradient(135deg, rgba(55, 138, 221, 0.25) 0%, rgba(0, 212, 255, 0.15) 100%);
+  border-color: rgba(55, 138, 221, 0.4);
+  transform: translateY(-2px);
+  color: #ffffff;
+}
+
+.use-case::before {
+  content: "▸ ";
+  color: #00d4ff;
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.calculator {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.calc-input-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: linear-gradient(135deg, rgba(55, 138, 221, 0.1) 0%, rgba(0, 212, 255, 0.08) 100%);
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(55, 138, 221, 0.2);
+}
+
+.calc-input-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  min-width: 100px;
+}
+
+input[type="number"], input[type="range"] {
+  padding: 10px 14px;
+  border: 2px solid rgba(55, 138, 221, 0.3);
+  border-radius: 8px;
+  font-size: 13px;
+  background: #1a1f2e;
+  color: #ffffff;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+input[type="number"]:focus, input[type="range"]:focus {
+  border-color: #00d4ff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.15);
+}
+
+input[type="range"] {
+  flex: 1;
+  min-width: 200px;
+  padding: 8px;
+  cursor: pointer;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #378ADD 0%, #00d4ff 100%);
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  border: 2px solid #1a1f2e;
+  transition: all 0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: var(--shadow-lg);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #378ADD 0%, #00d4ff 100%);
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  border: 2px solid #1a1f2e;
+  transition: all 0.2s;
+}
+
+.file-size-display {
+  font-size: 14px;
+  font-weight: 700;
+  color: #00d4ff;
+  min-width: 100px;
+  background: linear-gradient(135deg, rgba(55, 138, 221, 0.15) 0%, rgba(0, 212, 255, 0.1) 100%);
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid rgba(55, 138, 221, 0.2);
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.result-card {
+  padding: 16px;
+  border-radius: 12px;
+  border: 2px solid rgba(55, 138, 221, 0.25);
+  text-align: center;
+  background: linear-gradient(135deg, rgba(26, 31, 46, 0.9) 0%, rgba(35, 45, 61, 0.9) 100%);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.result-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #378ADD, #00d4ff);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.result-card:hover::before {
+  transform: scaleX(1);
+}
+
+.result-card:hover {
+  border-color: rgba(55, 138, 221, 0.4);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+  background: linear-gradient(135deg, rgba(26, 31, 46, 0.98) 0%, rgba(35, 45, 61, 0.98) 100%);
+}
+
+.result-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #909090;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
+  opacity: 0.9;
+}
+
+.result-value {
+  font-size: 20px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #378ADD 0%, #00d4ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 4px;
+}
+
+.result-comparison {
+  font-size: 11px;
+  color: #909090;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+.examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.example-card {
+  padding: 16px;
+  border-radius: 12px;
+  border: 2px solid rgba(55, 138, 221, 0.25);
+  background: linear-gradient(135deg, rgba(26, 31, 46, 0.9) 0%, rgba(35, 45, 61, 0.9) 100%);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.example-card::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(55, 138, 221, 0.15), rgba(0, 212, 255, 0.1));
+  transition: top 0.4s ease;
+  z-index: -1;
+}
+
+.example-card:hover {
+  border-color: rgba(55, 138, 221, 0.4);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-6px) scale(1.02);
+}
+
+.example-card:hover::before {
+  top: 0;
+}
+
+.example-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: #ffffff;
+}
+
+.example-content {
+  font-size: 12px;
+  color: #b0b0b0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.example-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  transition: all 0.2s;
+}
+
+.example-card:hover .example-line {
+  padding-left: 4px;
+}
+
+.example-item { flex: 1; }
+
+.example-time {
+  font-weight: 700;
+  color: #00d4ff;
+  font-size: 13px;
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  margin-top: 20px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 16px;
+  padding: 20px 0 0 0;
+  background: linear-gradient(180deg, rgba(55, 138, 221, 0.08) 0%, transparent 100%);
+  border-radius: 12px;
+}
+
+.bar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.bar {
+  width: 100%;
+  background: linear-gradient(180deg, var(--bar-color) 0%, var(--bar-color-dark) 100%);
+  border-radius: 8px 8px 0 0;
+  position: relative;
+  min-height: 20px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+  border-radius: 8px 8px 0 0;
+  pointer-events: none;
+}
+
+.bar:hover {
+  filter: brightness(1.25);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+
+.bar-label {
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 12px;
+  text-align: center;
+  color: #b0b0b0;
+}
+
+.bar-value {
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  background: #1a1f2e;
+  padding: 4px 10px;
+  border-radius: 6px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(55, 138, 221, 0.2);
+}
+
+.legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  font-size: 12px;
+  color: #b0b0b0;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(55, 138, 221, 0.08) 0%, rgba(0, 212, 255, 0.05) 100%);
+  border-radius: 8px;
+  border: 1px solid rgba(55, 138, 221, 0.15);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.legend-color {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  box-shadow: var(--shadow-sm);
+}
+
+.info-box {
+  background: linear-gradient(135deg, rgba(55, 138, 221, 0.12) 0%, rgba(0, 212, 255, 0.08) 100%);
+  border-left: 4px solid #00d4ff;
+  padding: 16px;
+  border-radius: 8px;
+  margin-top: 20px;
+  font-size: 13px;
+  color: #b0b0b0;
+  line-height: 1.8;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(55, 138, 221, 0.15);
+}
+
+.info-box strong { 
+  color: #ffffff;
+  font-weight: 700;
+}
+</style>
+
+<div class="container">
+  <div class="section">
+    <h2>🔧 Memory Hierarchy & Storage Types</h2>
+    
+    <div id="memoryTiers">
+      <div class="memory-tier" onclick="toggleTier(this)">
+        <div class="tier-visual tier-cache">L1/L2/L3</div>
+        <div class="tier-header">
+          <div class="tier-label">
+            💨 Cache Memory
+            <span class="expand-icon">▼</span>
+          </div>
+          <div class="spec"><strong>Speed:</strong> 1-5 ns</div>
+          <div class="spec"><strong>Size:</strong> 1-20 MB</div>
+          <div class="spec"><strong>Cost:</strong> $$$$ (most expensive)</div>
+          <div class="spec"><strong>Type:</strong> SRAM (fast memory chip)</div>
+          
+          <div class="tier-details">
+            <div class="detail-section">
+              <div class="detail-title">📖 What is cache memory?</div>
+              <div class="detail-content">
+                Cache is a small, ultra-fast memory built directly into the CPU (processor). It stores copies of data the CPU uses most frequently. The CPU checks the cache first before looking in RAM. There are usually three levels: L1 (smallest, fastest), L2 (medium), and L3 (larger, slightly slower).
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-title">⚡ How does it work?</div>
+              <div class="detail-content">
+                When the CPU needs data, it first searches the cache. If found (cache hit), it gets the data instantly. If not found (cache miss), the CPU must wait for data from RAM, which is much slower. Modern CPUs achieve 90-95% cache hit rates on typical tasks.
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-title">🚀 Why is it so fast?</div>
+              <div class="detail-content">
+                Cache is made from SRAM (Static RAM) technology, which is physically located on the CPU chip itself. No distance for data to travel = instant access. This is the fastest storage you can buy, but also the most expensive per byte.
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-title">🎯 Common uses</div>
+              <div class="use-cases">
+                <div class="use-case">Frequently accessed data</div>
+                <div class="use-case">Loop counters</div>
+                <div class="use-case">Recently used variables</div>
+                <div class="use-case">CPU computation results</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="memory-tier" onclick="toggleTier(this)">
+        <div class="tier-visual tier-ram">RAM</div>
+        <div class="tier-header">
+          <div class="tier-label">
+            💾 RAM (Random Access Memory)
+            <span class="expand-icon">▼</span>
+          </div>
+          <div class="spec"><strong>Speed:</strong> 100-200 ns</div>
+          <div class="spec"><strong>Size:</strong> 4-256 GB</div>
+          <div class="spec"><strong>Cost:</strong> $$$ (expensive)</div>
+          <div class="spec"><strong>Volatile:</strong> Data lost on power off</div>
+
+          <div class="tier-details">
+            <div class="detail-section">
+              <div class="detail-title">📖 What is RAM?</div>
+              <div class="detail-content">
+                RAM is your computer's main working memory. It temporarily stores all data and programs currently running on your computer. When you open an application or file, it gets loaded into RAM so the CPU can access it quickly. Think of it as your computer's workspace.
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-title">⚡ How does it work?</div>
+              <div class="detail-content">
+                RAM stores data in memory cells that can be accessed randomly (hence the name). Each cell has a unique address. The CPU asks for data by address, and RAM returns it instantly. Unlike cache, RAM is external to the CPU, connected via memory bus.
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-title">🚀 Important characteristic</div>
+              <div class="detail-content">
+                RAM is volatile, meaning it loses all data when you turn off your computer. This is why you must save your work to permanent storage (SSD/HDD). More RAM = ability to run more programs simultaneously without slowdown.
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-title">🎯 Common uses</div>
+              <div class="use-cases">
+                <div class="use-case">Running programs</div>
+                <div class="use-case">Storing open documents</div>
+                <div class="use-case">Browser tabs and data</div>
+                <div class="use-case">Game assets and textures</div>
+                <div class="use-case">Temporary calculations</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="memory-tier" onclick="toggleTier(this)">
+        <div class="tier-visual tier-ssd">SSD</div>
+        <div class="tier-header">
+          <div class="tier-label">
+            ⚡ SSD (Solid State Drive)
+            <span class="expand-icon">▼</span>
+          </div>
+          <div class="spec"><strong>Speed:</strong> 0.1-1 ms</div>
+          <div class="spec"><strong>Size:</strong> 256 GB - 4 TB</div>
+          <div class="spec"><strong>Cost:</strong> $$ (moderate)</div>
+          <div class="spec"><strong>Tech:</strong> Flash memory, no moving parts</div>
+
+          <div class="tier-details">
+            <div class="detail-section">
+              <div class="detail-title">📖 What is an SSD?</div>
+              <div class="detail-content">
+                An SSD is a storage drive with no moving parts. It uses flash memory (similar to USB sticks or phone storage) to permanently store your files, programs, and operating system. SSDs are 10-20 times faster than hard disk drives, making them the modern standard for computers.
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-title">⚡ How does it work?</div>
+              <div class="detail-content">
+                SSDs store data electronically in flash memory cells. There are no spinning platters or moving read/write heads. Data is organized into blocks and pages. The absence of mechanical parts makes them faster, more reliable, and more durable than HDDs.
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-title">🚀 Why is it better than HDD?</div>
+              <div class="detail-content">
+                No moving parts mean no waiting for platters to spin or heads to move. SSDs provide instant access to any file. This makes boot times faster (seconds instead of minutes), programs launch instantly, and file operations are nearly instantaneous.
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-title">🎯 Common uses</div>
+              <div class="use-cases">
+                <div class="use-case">Operating system storage</div>
+                <div class="use-case">Program installation</div>
+                <div class="use-case">Daily file storage</div>
+                <div class="use-case">Gaming (fast loading)</div>
+                <div class="use-case">Video/photo editing</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="memory-tier" onclick="toggleTier(this)">
+        <div class="tier-visual tier-hdd">HDD</div>
+        <div class="tier-header">
+          <div class="tier-label">
+            💿 HDD (Hard Disk Drive)
+            <span class="expand-icon">▼</span>
+          </div>
+          <div class="spec"><strong>Speed:</strong> 5-20 ms</div>
+          <div class="spec"><strong>Size:</strong> 500 GB - 10 TB</div>
+          <div class="spec"><strong>Cost:</strong> $ (cheapest)</div>
+          <div class="spec"><strong>Tech:</strong> Spinning magnetic disk</div>
+
+          <div class="tier-details">
+            <div class="detail-section">
+              <div class="detail-title">📖 What is a hard disk drive?</div>
+              <div class="detail-content">
+                An HDD is a traditional storage device with spinning magnetic platters (disks). A read/write head moves across the spinning platters to access data. HDDs have been used for decades and are still common for backup and large storage needs due to their low cost and massive capacity.
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-title">⚡ How does it work?</div>
+              <div class="detail-content">
+                Data is stored magnetically on spinning platters. When you need a file, the read/write head moves to the correct location and waits for the platter to spin around. This mechanical process causes delays—seek time (head movement) and rotational latency (waiting for data to pass under the head).
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-title">🚀 Why is it so slow?</div>
+              <div class="detail-content">
+                Mechanical parts have physical limits. Platters typically spin at 5,400-7,200 RPM. To access random data, the head must wait for the platter to rotate to the correct position. This delay (5-20 milliseconds) makes HDDs terrible for everyday computing but still useful for bulk storage.
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-title">🎯 Common uses</div>
+              <div class="use-cases">
+                <div class="use-case">Backup storage</div>
+                <div class="use-case">Data archives</div>
+                <div class="use-case">Server farms</div>
+                <div class="use-case">External drives</div>
+                <div class="use-case">Large video libraries</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>🎯 Speed Comparison Calculator</h3>
+    <p style="font-size: 12px; color: #909090; margin-bottom: 12px;">Based on bandwidth transfer rates: Cache ~50 GB/s | RAM ~15 GB/s | SSD ~500 MB/s | HDD ~150 MB/s</p>
+    <div class="calculator">
+      <div class="calc-input-group">
+        <label>📦 File Size:</label>
+        <input type="range" id="fileSize" min="1" max="10000" value="100" oninput="updateCalculator()">
+        <input type="number" id="fileSizeNum" min="1" max="10000" value="100" oninput="updateSlider()" style="width: 80px;">
+        <span class="file-size-display" id="fileSizeDisplay">100 MB</span>
+      </div>
+
+      <div class="results-grid">
+        <div class="result-card">
+          <div class="result-label">💨 Cache</div>
+          <div class="result-value" id="cacheTime">0.002 ms</div>
+          <div class="result-comparison">⚡ Fastest!</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">💾 RAM</div>
+          <div class="result-value" id="ramTime">0.007 ms</div>
+          <div class="result-comparison">Very Fast</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">⚡ SSD</div>
+          <div class="result-value" id="ssdTime">200 ms</div>
+          <div class="result-comparison">Fast</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">💿 HDD</div>
+          <div class="result-value" id="hddTime">667 ms</div>
+          <div class="result-comparison">Slow</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>🌍 Real-World Examples</h3>
+    <div class="examples-grid">
+      <div class="example-card">
+        <div class="example-title">📱 Open Web Browser</div>
+        <div class="example-content">
+          <div class="example-line">
+            <span class="example-item">From RAM:</span>
+            <span class="example-time">~50 ms</span>
+          </div>
+          <div class="example-line">
+            <span class="example-item">From SSD:</span>
+            <span class="example-time">~500 ms</span>
+          </div>
+          <div class="example-line">
+            <span class="example-item">From HDD:</span>
+            <span class="example-time">~5 sec</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <div class="example-title">📷 Open a Photo (5 MB)</div>
+        <div class="example-content">
+          <div class="example-line">
+            <span class="example-item">From RAM:</span>
+            <span class="example-time">~0.33 ms</span>
+          </div>
+          <div class="example-line">
+            <span class="example-item">From SSD:</span>
+            <span class="example-time">~10 ms</span>
+          </div>
+          <div class="example-line">
+            <span class="example-item">From HDD:</span>
+            <span class="example-time">~33 ms</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <div class="example-title">🎮 Load Game (4 GB)</div>
+        <div class="example-content">
+          <div class="example-line">
+            <span class="example-item">Copy to RAM:</span>
+            <span class="example-time">~267 ms</span>
+          </div>
+          <div class="example-line">
+            <span class="example-item">From SSD:</span>
+            <span class="example-time">~8 sec</span>
+          </div>
+          <div class="example-line">
+            <span class="example-item">From HDD:</span>
+            <span class="example-time">~26 sec</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <div class="example-title">💾 Save Document (2 MB)</div>
+        <div class="example-content">
+          <div class="example-line">
+            <span class="example-item">To SSD:</span>
+            <span class="example-time">~4 ms</span>
+          </div>
+          <div class="example-line">
+            <span class="example-item">To HDD:</span>
+            <span class="example-time">~13 ms</span>
+          </div>
+          <div class="example-line">
+            <span class="example-item">SSD is:</span>
+            <span class="example-time">3× faster</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>📊 Speed Performance Chart</h3>
+    <div class="chart-container">
+      <div class="bar-group">
+        <div class="bar" style="--bar-color: #7F77DD; --bar-color-dark: #534AB7; height: 95%;">
+          <div class="bar-value">⚡</div>
+        </div>
+        <div class="bar-label">Cache<br>50 GB/s</div>
+      </div>
+      <div class="bar-group">
+        <div class="bar" style="--bar-color: #378ADD; --bar-color-dark: #185FA5; height: 70%;">
+          <div class="bar-value">⚡⚡</div>
+        </div>
+        <div class="bar-label">RAM<br>15 GB/s</div>
+      </div>
+      <div class="bar-group">
+        <div class="bar" style="--bar-color: #BA7517; --bar-color-dark: #854F0B; height: 35%;">
+          <div class="bar-value">⚡⚡⚡</div>
+        </div>
+        <div class="bar-label">SSD<br>500 MB/s</div>
+      </div>
+      <div class="bar-group">
+        <div class="bar" style="--bar-color: #5F5E5A; --bar-color-dark: #2C2C2A; height: 10%;">
+          <div class="bar-value">⚡⚡⚡⚡⚡</div>
+        </div>
+        <div class="bar-label">HDD<br>150 MB/s</div>
+      </div>
+    </div>
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-color" style="background: linear-gradient(180deg, #7F77DD 0%, #534AB7 100%);"></div>
+        <span>Cache: Ultra-fast, tiny</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: linear-gradient(180deg, #378ADD 0%, #185FA5 100%);"></div>
+        <span>RAM: Very fast, moderate</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: linear-gradient(180deg, #BA7517 0%, #854F0B 100%);"></div>
+        <span>SSD: Fast, large</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: linear-gradient(180deg, #5F5E5A 0%, #2C2C2A 100%);"></div>
+        <span>HDD: Slowest, huge</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>💰 Cost Comparison Chart</h3>
+    <div class="chart-container">
+      <div class="bar-group">
+        <div class="bar" style="--bar-color: #E24B4A; --bar-color-dark: #A32D2D; height: 95%;">
+          <div class="bar-value">$$$</div>
+        </div>
+        <div class="bar-label">Cache<br>$100/MB</div>
+      </div>
+      <div class="bar-group">
+        <div class="bar" style="--bar-color: #BA7517; --bar-color-dark: #854F0B; height: 60%;">
+          <div class="bar-value">$$</div>
+        </div>
+        <div class="bar-label">RAM<br>$5/GB</div>
+      </div>
+      <div class="bar-group">
+        <div class="bar" style="--bar-color: #639922; --bar-color-dark: #3B6D11; height: 15%;">
+          <div class="bar-value">$</div>
+        </div>
+        <div class="bar-label">SSD<br>$0.10/GB</div>
+      </div>
+      <div class="bar-group">
+        <div class="bar" style="--bar-color: #5F5E5A; --bar-color-dark: #2C2C2A; height: 5%;">
+          <div class="bar-value">¢</div>
+        </div>
+        <div class="bar-label">HDD<br>$0.02/GB</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="info-box">
+      <strong>💡 Key Concept:</strong> Your computer manages this memory hierarchy automatically! When you open a program, the CPU first checks its cache (fastest). If data isn't there, it checks RAM (very fast). If not in RAM, it loads from SSD (fast). If not there, it loads from HDD (slow). Notice how Cache is faster than RAM, which is faster than SSD, which is faster than HDD. Modern computers with SSDs are much faster than old computers with just HDDs because the storage bottleneck is eliminated. Click on any storage type above to expand and learn more! 🚀
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleTier(element) {
+  element.classList.toggle('expanded');
+}
+
+function updateCalculator() {
+  const fileSize = parseInt(document.getElementById('fileSize').value);
+  document.getElementById('fileSizeNum').value = fileSize;
+  updateDisplay(fileSize);
+}
+
+function updateSlider() {
+  const fileSize = parseInt(document.getElementById('fileSizeNum').value);
+  if (fileSize >= 1 && fileSize <= 10000) {
+    document.getElementById('fileSize').value = fileSize;
+    updateDisplay(fileSize);
+  }
+}
+
+function updateDisplay(fileSize) {
+  let fileSizeDisplay;
+  if (fileSize < 1000) {
+    fileSizeDisplay = fileSize + ' MB';
+  } else {
+    fileSizeDisplay = (fileSize / 1024).toFixed(2) + ' GB';
+  }
+  document.getElementById('fileSizeDisplay').textContent = fileSizeDisplay;
+
+  const cacheTime = fileSize / 50000;
+  const ramTime = fileSize / 15000;
+  const ssdTime = fileSize / 500;
+  const hddTime = fileSize / 150;
+
+  document.getElementById('cacheTime').textContent = cacheTime.toFixed(3) + ' ms';
+  document.getElementById('ramTime').textContent = ramTime.toFixed(3) + ' ms';
+  
+  if (ssdTime >= 1000) {
+    document.getElementById('ssdTime').textContent = (ssdTime / 1000).toFixed(2) + ' sec';
+  } else {
+    document.getElementById('ssdTime').textContent = ssdTime.toFixed(2) + ' ms';
+  }
+  
+  if (hddTime >= 1000) {
+    document.getElementById('hddTime').textContent = (hddTime / 1000).toFixed(2) + ' sec';
+  } else {
+    document.getElementById('hddTime').textContent = hddTime.toFixed(2) + ' sec';
+  }
+}
+
+updateDisplay(100);
+</script>
